@@ -1,0 +1,64 @@
+
+Functions for wrapping a whole org table column and a function for wrapping text
+in an individual org table cell.
+
+Original inspiration: [[https://emacs.stackexchange.com/questions/30837/org-tables-wrap-all-fields-in-column-to-a-given-size][First answer at: org mode - Org tables: Wrap all fields in column to a given size - Emacs Stack Exchange]]
+
+Original function works on this table (except that it doesn't move hlines as it
+should):
+
+|---+--------------------------------+---|
+| 1 | one                            | a |
+|---+--------------------------------+---|
+| 2 | two                            | b |
+|---+--------------------------------+---|
+| 3 | This is a long chunk of text   | c |
+|---+--------------------------------+---|
+| 4 | four                           | d |
+|---+--------------------------------+---|
+| 5 | Yet another long chunk of text | e |
+|---+--------------------------------+---|
+
+Original function partly works (but swallows "four" line) on this table:
+
+|---+--------------------------------+---|
+| 1 | one                            | a |
+| 2 | two                            | b |
+| 3 | This is a long chunk of text   | c |
+| 4 | four                           | d |
+| 5 | Yet another long chunk of text | e |
+|---+--------------------------------+---|
+
+Original function barely works on this table:
+
+|---+--------------------------------+---|
+| 1 | one                            | a |
+| 2 | two                            | b |
+| 3 | This is a long chunk of text   | c |
+| 4 | four                           | d |
+| 5 | Yet another long chunk of text | e |
+
+
+My version of function works on all these tables correctly.
+
+Possible configuration using use-package:
+#+BEGIN_SRC emacs-lisp
+(use-package org-table-wrap-functions
+  :load-path  /path/to/org-table-wrap-functions-repo-dir
+  :bind (:map org-mode-map ("C-|" . 'org-table-column-wrap-to-point)))
+#+END_SRC
+
+Usage: I rarely use =org-table-column-wrap-to-width=, but I've included it in case
+someone wants to use it. I *do* use =org-table-column-wrap-to-point= with the
+binding shown above. I find that after using this and subsequently adding other
+long columns, rather than rewrapping the whole column (which works) I will use
+=org-table-wrap-cell-at-point=, which I have bound to '<evil-leader-key> C' to
+tidy up the cell. If you wish to execute =org-table-wrap-cell-at-point= multiple
+times you can do so with '.' if you use =evil-mode=. Be mindful that for large
+tables the column wrapping functions take a while to complete, but if you are
+patient they will complete.
+
+Note also that the column wrap functions are smart enough to not break words
+apart as it uses org-wrap to do the heavy lifting. So, you can place your cursor
+inside a word and execute the column wrap functions and it will do what you
+expect.
