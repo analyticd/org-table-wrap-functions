@@ -78,3 +78,22 @@ rectangle region, and then do M-x org-table-unwrap-cell-region.
 If you are an evil-mode user, you'll find it useful to know and use
 =evil-visual-block= and =evil-delete= to fix up some issues caused by wrapping more
 than one column.
+
+The best overall solution I have found is to:
+
+1. Unwrap a cell by highlighting all the text in its region
+2. execute =org-table-unwrap-cell-region=, then
+3. remove empty table lines, i.e., rows, then
+4. convert to a =table.el= table via =C-c ~= and then
+5. use =C-u <number of chars width you'd like to shrink the cell by> M-x table-narrow-cell= until you get the width for the column you want then
+6. (optional) convert the table back to an =org-table= via =C-c ~= again and do any final tidying up to the table.
+   
+To wrap content in one cell I find repeated uses of =M-<return>=,
+=org-table-wrap-region=.
+
+If you are only needing to wrap one column (and no others), then
+=org-table-column-wrap-to-point= or =org-table-column-wrap-to-width= are reliable.
+
+Note that if your intent is to export your table, you are better off not
+wrapping text explicitly in org-tables and instead, perhaps, using the column
+constraint feature of =org-tables=, via <20>, to control the width.
