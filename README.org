@@ -1,6 +1,13 @@
 
-Functions for wrapping a whole org table column and a function for wrapping text
-in an individual org table cell.
+Functions for wrapping and unwrapping org table content. 
+
+org-tables already have many useful functions that can be used to manipulate them:
+=org-table-cut-region=, =org-table-copy-region=, =org-table-paste-rectangle=, =org-table-wrap-region=
+
+Also, org-tables column width can be constrained via, e.g., <30>, and then each
+cell edited with =org-table-edit-field=. Further, an org-table can be converted to
+a table.el table with =C-c ~= and then use table.el's functions to manipulate the
+table. Despite all this, I still wanted more.
 
 Original inspiration: [[https://emacs.stackexchange.com/questions/30837/org-tables-wrap-all-fields-in-column-to-a-given-size][First answer at: org mode - Org tables: Wrap all fields in column to a given size - Emacs Stack Exchange]]
 
@@ -45,7 +52,8 @@ Possible configuration using use-package:
 #+BEGIN_SRC emacs-lisp
 (use-package org-table-wrap-functions
   :load-path  /path/to/org-table-wrap-functions-repo-dir
-  :bind (:map org-mode-map ("C-|" . 'org-table-column-wrap-to-point)))
+  :bind (:map org-mode-map ("C-|" . 'org-table-column-wrap-to-point))
+  :bind (:map org-mode-map ("C->" . 'org-table-unwrap-cell-region)))
 #+END_SRC
 
 Usage: I rarely use =org-table-column-wrap-to-width=, but I've included it in case
@@ -62,3 +70,11 @@ Note also that the column wrap functions are smart enough to not break words
 apart as it uses org-wrap to do the heavy lifting. So, you can place your cursor
 inside a word and execute the column wrap functions and it will do what you
 expect.
+
+Finally, you sometimes have need to unwrap a previously wrapped table cell. To
+do so, first highlight the text of the cell using either a normal region or a
+rectangle region, and then do M-x org-table-unwrap-cell-region.
+
+If you are an evil-mode user, you'll find it useful to know and use
+=evil-visual-block= and =evil-delete= to fix up some issues caused by wrapping more
+than one column.

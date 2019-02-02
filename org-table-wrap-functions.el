@@ -112,3 +112,29 @@ boundary."
     (org-table-align)
     (forward-line -1)
     (org-table-goto-column ccol)))
+
+
+(defun jump-up-to-non-whitespace-char-in-same-column ()
+  "Go up in the same column until we encounter a non-whitespace
+character."
+    (interactive)
+    (previous-line)
+    (while (or (= (char-after (point)) 32)
+               (= (char-after (point)) 10))
+      (previous-line)))
+
+(defun org-table-unwrap-cell-region (beg end)
+  "Join a rectangle of text into one longer string."
+  (interactive "r")
+  (let ((result)
+        (ccol (org-table-current-column)))
+    (org-table-cut-region beg end)
+    (setq result (string-trim (replace-regexp-in-string
+                               "[ \t]+" " "
+                               (substring-no-properties (string-join (mapcar #'car org-table-clip) " ")))))
+    (org-table-goto-column ccol)
+    (jump-up-to-non-whitespace-char-in-same-column)
+    (next-line)
+    (insert result)
+    (forward-char 1)
+    (org-table-align)))
